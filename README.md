@@ -10,7 +10,7 @@ Press "1" to turn your lines into a polygon.
 
 Press "2" to find the necessary line for the encapsulation.
 
-Press "3" to show the new polygon where are encapsulated areas are added.
+Press "3" to show the new polygon where the encapsulated areas are added.
 
 Press "4" then feel free to add any point to any place with left mouse click. 
 
