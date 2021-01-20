@@ -403,65 +403,93 @@ function onDocumentKeyDown( event ){
                 }
 
                 var secondlc = 0, secondrc = 0;
-                for (k = 0; k<points.length; k++){
-                    if (k == list1[num] || k == diagonaldict[turnpoints[i]][(j+1)%2] || k == (diagonaldict[turnpoints[i]][(j+1)%2] - 1+points.length) %points.length){
-                        continue;
-                    }
 
-                    if (doIntersect(points[k], points[(k+1)%points.length], newp_left, points[diagonaldict[turnpoints[i]][(j+1)%2]]) ){
-                        //(doIntersect(points[k], points[(k+1)%points.length], newp_left, new_turnleft && k != turnpoints[i] && (k+1)%points.length != turnpoints[i] ))){
-
-                        var check = false;
-                        var a = points[diagonaldict[turnpoints[i]][j]];
-                        var b = points[diagonaldict[turnpoints[i]][(j+1)%2]];
-                        var c = new THREE.Vector2((a.x - b.x)/50, (a.y - b.y)/50);
-                        var m;
-                        for (m = 0; m<50; m++){
-                            var d = new THREE.Vector2( b.x + c.x * m, b.y + c.y * m );
-
-                            if (!doIntersect(points[k], points[(k+1)%points.length], newp_left, d)){
-                                check = true;
+                var check = true;
+                var a = points[diagonaldict[turnpoints[i]][j]];
+                var b = points[diagonaldict[turnpoints[i]][(j+1)%2]];
+                var c = new THREE.Vector2((a.x - b.x)/50, (a.y - b.y)/50);
+                var m;
+                for (m = 1; m<49; m++){
+                    var d = new THREE.Vector2( b.x + c.x * m, b.y + c.y * m );
+                    var t;
+                    for (t = 0; t< points.length; t++){
+                        if (doIntersect(points[t], points[(t+1)%points.length], newp_left, d) && t != list1[num]){
+                            var n;
+                            check = false;
+                            for (n = 1; n<49; n++){
+                                var f = new THREE.Vector2( b.x + c.x * n, b.y + c.y * n );
+                                if (n == m){
+                                    continue;
+                                }
+                                if (!doIntersect(points[t], points[(t+1)%points.length], newp_left, f)){
+                                    check = true;
+                                    console.log("look left", turnpoints[i]);
+                                    console.log("t is", t);
+                                    console.log("listnum is ", list1[num])
+                                    break;
+                                }
                             }
                             
                         }
-
-                        if(!check)
-                            secondlc++;
                     }
-
-                    if (doIntersect(points[k], points[(k+1)%points.length], newp_right, points[diagonaldict[turnpoints[i]][(j+1)%2]]) ){
-                        //(doIntersect(points[k], points[(k+1)%points.length], newp_right, new_turnright && k != turnpoints[i] && (k+1)%points.length != turnpoints[i] ))){
-                        
-
-                        var check = false;
-                        var a = points[diagonaldict[turnpoints[i]][j]];
-                        var b = points[diagonaldict[turnpoints[i]][(j+1)%2]];
-                        var c = new THREE.Vector2((a.x - b.x)/50, (a.y - b.y)/50);
-                        var m;
-                        for (m = 0; m<50; m++){
-                            var d = new THREE.Vector2( b.x + c.x * m, b.y + c.y * m );
-
-                            if (!doIntersect(points[k], points[(k+1)%points.length], newp_right, d)){
-                                check = true;
-                            }
-                            
-                        }
-
-                        if(!check)
-                            secondrc++;
-                    }
+                    
                 }
+                
+                if(!check)
+                    secondlc++;
+            
+
+
+                
+
+                check = true;
+                var a = points[diagonaldict[turnpoints[i]][j]];
+                var b = points[diagonaldict[turnpoints[i]][(j+1)%2]];
+                var c = new THREE.Vector2((a.x - b.x)/50, (a.y - b.y)/50);
+                var m;
+                for (m = 1; m<49; m++){
+                    var d = new THREE.Vector2( b.x + c.x * m, b.y + c.y * m );
+
+                    var t;
+                    for (t = 0; t< points.length; t++){
+                        if (doIntersect(points[t], points[(t+1)%points.length], newp_right, d) && t != list1[num]){
+                            var n;
+                            check = false;
+                            for (n = 1; n<49; n++){
+                                var f = new THREE.Vector2( b.x + c.x * n, b.y + c.y * n );
+                                if (n == m){
+                                    continue;
+                                }
+                                if (!doIntersect(points[t], points[(t+1)%points.length], newp_right, f)){
+                                    check = true;
+                                    console.log("look right ", turnpoints[i]);
+                                    console.log("t is", t);
+                                    console.log("listnum is ", list1[num])
+                                    break;
+                                }
+                            }
+                            
+                        }
+                    }
+
+                    
+                }
+
+                if(!check)
+                    secondrc++;
+                    
+
 
                 console.log("BUG FINDING ", turnpoints[i]);
                 console.log(firstlc, firstrc, secondlc, secondrc);
 
-                if (firstlc == 0 && secondrc != 0){
+                if (firstlc == 0 && secondrc != 0 ){
                     fixcross[i].push(list1[num]);
                     fixcross[i].push(list1[num+1]);
                     fixcross[i].push(list2[num]);
                     fixcross[i].push(list2[num+1]);
 
-                
+                    /*
                     console.log("THIS IS THE POINT : ", list2[num], list2[num+1]);
                     lines.push(new THREE.Vector2( points[turnpoints[i]].x, points[turnpoints[i]].y ));
                     lines.push(new THREE.Vector2( list2[num], list2[num+1] ));
@@ -482,17 +510,18 @@ function onDocumentKeyDown( event ){
                         newpoints[list1[num+1]].x = list2[num];
                         newpoints[list1[num+1]].y = list2[num+1];
                     }
+                    */
                     
                   
                 }
-                else if (firstrc == 0 && secondlc != 0){
+                else if (firstrc == 0 && secondlc != 0 ){
 
                     fixcross[i].push(list1[num]);
                     fixcross[i].push(list1[num+1]);
                     fixcross[i].push(list2[num]);
                     fixcross[i].push(list2[num+1]);
 
-                   
+                    /*
                     console.log("THIS IS THE POINT : ", list2[num], list2[num+1]);
                     lines.push(new THREE.Vector2( points[turnpoints[i]].x, points[turnpoints[i]].y ));
                     lines.push(new THREE.Vector2( list2[num], list2[num+1] ));
@@ -513,6 +542,7 @@ function onDocumentKeyDown( event ){
                         newpoints[list1[num+1]].x = list2[num];
                         newpoints[list1[num+1]].y = list2[num+1];
                     }
+                    */
 
                 
                 }
@@ -523,7 +553,7 @@ function onDocumentKeyDown( event ){
         }
 
         
-        /*
+        
         for (i=0; i<fixcross.length;i++){
             if (det > 0 && points_poly[turnpoints[i]] == 1){
                 continue;
@@ -585,7 +615,7 @@ function onDocumentKeyDown( event ){
 
                 }
             }
-        } */
+        } 
 
 
         newpoints = removeElementsWithValue(newpoints, 0);
@@ -761,9 +791,9 @@ function DrawLastPol(){
 
 function DrawPoints(coord, material){
     geometry = new THREE.CircleGeometry( 0.5, 32 );
-	var circle = new THREE.Mesh( geometry, material ); 
-	circle.position.x = coord.x;
-	circle.position.y = coord.y;
+    var circle = new THREE.Mesh( geometry, material ); 
+    circle.position.x = coord.x;
+    circle.position.y = coord.y;
 
     scene.add( circle );
 }
@@ -784,4 +814,3 @@ function animate() {
     renderer.render( scene, camera );
 
 }
-
