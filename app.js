@@ -409,36 +409,26 @@ function onDocumentKeyDown( event ){
                 var b = points[diagonaldict[turnpoints[i]][(j+1)%2]];
                 var c = new THREE.Vector2((a.x - b.x)/50, (a.y - b.y)/50);
                 var m;
+                var cc = 0;
                 for (m = 1; m<49; m++){
                     var d = new THREE.Vector2( b.x + c.x * m, b.y + c.y * m );
                     var t;
+                    
                     for (t = 0; t< points.length; t++){
                         if (doIntersect(points[t], points[(t+1)%points.length], newp_left, d) && t != list1[num]){
-                            var n;
-                            check = false;
-                            for (n = 1; n<49; n++){
-                                var f = new THREE.Vector2( b.x + c.x * n, b.y + c.y * n );
-                                if (n == m){
-                                    continue;
-                                }
-                                if (!doIntersect(points[t], points[(t+1)%points.length], newp_left, f)){
-                                    check = true;
-                                    console.log("look left", turnpoints[i]);
-                                    console.log("t is", t);
-                                    console.log("listnum is ", list1[num])
-                                    break;
-                                }
-                            }
+                            cc++;
+                            break;
+                
                             
                         }
                     }
                     
                 }
-                
-                if(!check)
-                    secondlc++;
-            
 
+            
+                if (cc == 48){
+                    secondlc++;
+                }
 
                 
 
@@ -447,27 +437,15 @@ function onDocumentKeyDown( event ){
                 var b = points[diagonaldict[turnpoints[i]][(j+1)%2]];
                 var c = new THREE.Vector2((a.x - b.x)/50, (a.y - b.y)/50);
                 var m;
+                var cc = 0;
                 for (m = 1; m<49; m++){
                     var d = new THREE.Vector2( b.x + c.x * m, b.y + c.y * m );
-
                     var t;
+                    
                     for (t = 0; t< points.length; t++){
                         if (doIntersect(points[t], points[(t+1)%points.length], newp_right, d) && t != list1[num]){
-                            var n;
-                            check = false;
-                            for (n = 1; n<49; n++){
-                                var f = new THREE.Vector2( b.x + c.x * n, b.y + c.y * n );
-                                if (n == m){
-                                    continue;
-                                }
-                                if (!doIntersect(points[t], points[(t+1)%points.length], newp_right, f)){
-                                    check = true;
-                                    console.log("look right ", turnpoints[i]);
-                                    console.log("t is", t);
-                                    console.log("listnum is ", list1[num])
-                                    break;
-                                }
-                            }
+                            cc++;
+                            break;
                             
                         }
                     }
@@ -475,8 +453,10 @@ function onDocumentKeyDown( event ){
                     
                 }
 
-                if(!check)
+
+                  if (cc == 48){
                     secondrc++;
+                }
                     
 
 
